@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+if ARGV.length == 0
+  puts "Usage: ./ccwc [command] [file]"
+  exit
+end
+
+def read_file(argv)
+  filename = argv.shift
+  begin
+    file = File.open(filename, "r")
+    file.read
+  rescue Errno::ENOENT
+    puts "File not found: #{filename}"
+    exit
+  ensure
+    file&.close
+  end
+end
+
+command = ARGV.shift
+case command
+when "-c"
+  # number of bytes
+  file_contents = read_file(ARGV)
+  puts file_contents.bytesize
+when "-l"
+  # number of lines
+  file_contents = read_file(ARGV)
+  puts file_contents.lines.count
+else
+  exit
+end
+
+
+
