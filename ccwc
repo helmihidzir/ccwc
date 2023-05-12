@@ -19,15 +19,17 @@ def read_file(argv)
 end
 
 command = ARGV.shift
+file_contents = read_file(ARGV)
 case command
 when "-c"
   # number of bytes
-  file_contents = read_file(ARGV)
   puts file_contents.bytesize
 when "-l"
   # number of lines
-  file_contents = read_file(ARGV)
   puts file_contents.lines.count
+when "-w"
+  # number of words
+  puts file_contents.split.count
 else
   exit
 end

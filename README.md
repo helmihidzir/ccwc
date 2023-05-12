@@ -10,4 +10,4 @@ chmod +x ccwc
 ```
 
 ---
-Coding challenge by [John Crickett](https://codingchallenges.substack.com/p/coding-challenge-1)
+Coding challenge by [John Crickett](https://codingchallenges.fyi/challenges/intro)
