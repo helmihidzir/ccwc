@@ -30,6 +30,10 @@ when "-l"
 when "-w"
   # number of words
   puts file_contents.split.count
+when "-m"
+  puts file_contents.size
+# when ""
+#   puts "#{file_contents.bytesize} #{file_contents.lines.count} #{file_contents.split.count}"
 else
   exit
 end
