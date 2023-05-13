@@ -1,8 +1,23 @@
 #!/usr/bin/env ruby
 
-if ARGV.length == 0
-  puts "Usage: ./ccwc [command] [file]"
-  exit
+def process(command)
+  file_contents = read_file(ARGV)
+
+  case command
+  when "-c"
+    # number of bytes
+    puts file_contents.bytesize
+  when "-l"
+    # number of lines
+    puts file_contents.lines.count
+  when "-w"
+    # number of words
+    puts file_contents.split.count
+  when "-m"
+    puts file_contents.size
+  else
+    exit
+  end
 end
 
 def read_file(argv)
@@ -18,25 +33,18 @@ def read_file(argv)
   end
 end
 
-command = ARGV.shift
-file_contents = read_file(ARGV)
-case command
-when "-c"
-  # number of bytes
-  puts file_contents.bytesize
-when "-l"
-  # number of lines
-  puts file_contents.lines.count
-when "-w"
-  # number of words
-  puts file_contents.split.count
-when "-m"
-  puts file_contents.size
-# when ""
-#   puts "#{file_contents.bytesize} #{file_contents.lines.count} #{file_contents.split.count}"
-else
+if ARGV.length == 0
+  puts "Usage: ./ccwc [command] [file]"
   exit
 end
 
+if ARGV.length == 1
+  file_contents = read_file(ARGV)
+  puts "    #{file_contents.lines.count} #{file_contents.split.count} #{file_contents.bytesize}"
+  exit
+end
+
+command = ARGV.shift
+process(command)
 
 
