@@ -1,72 +1,75 @@
 #!/usr/bin/env ruby
 
-# TODO: Cleanup
+=begin
+Note:
 
-def process(command)
-  file_contents = read_file(ARGV)
+Command pattern to consider
+1. ./ccwc test.txt            [./ccwc <input>]
+2. ./ccwc -c test.txt         [./ccwc <options> <input>]
+3. echo test.txt | ./ccwc     [<standard input> ./ccwc]
+4. echo test.txt | .ccwc -c   [<standard input> ./ccwc <options>]
 
-  case command
-  when "-c"
-    # number of bytes
-    puts file_contents.bytesize
-  when "-l"
-    # number of lines
-    puts file_contents.lines.count
-  when "-w"
-    # number of words
-    puts file_contents.split.count
-  when "-m"
-    puts file_contents.size
-  else
-    exit
+- First argument can be either command or file or no command
+- If first argument is command, we need to check second argument for the input
+  - If first argument is empty, use default command
+  - Check if is null value for second argument
+    - If second argument is null, check for standard input
+    - If second argument is not null, it safe to assumed it is file
+=end
+
+class Ccwc
+  def initialize(input)
+    @input = input
   end
-end
 
-def read_file(argv)
-  filename = argv.shift
-  begin
-    file = File.open(filename, "r")
-    file.read
-  rescue Errno::ENOENT
-    puts "File not found: #{filename}"
-    exit
-  ensure
-    file&.close
+  def number_of_bytes
+    @input.bytesize
   end
-end
 
-if ARGV.length == 0
-  puts "Usage: ./ccwc [command] [file]"
-  exit
-end
+  def number_of_lines
+    @input.lines.count
+  end
 
-if ARGV.length == 1
-  argument = ARGV.shift
-  if argument.split("").first == "-"
-    contents = $stdin.read
-    case argument
-    when "-c"
-      # number of bytes
-      puts contents.bytesize
-    when "-l"
-      # number of lines
-      puts contents.lines.count
-    when "-w"
-      # number of words
-      puts contents.split.count
-    when "-m"
-      puts contents.size
-    else
-      exit
+  def number_of_words
+    @input.split.count
+  end
+
+  def number_of_characters
+    @input.size
+  end
+
+  def process(options)
+    output = ""
+
+    if options.empty?
+      output << " #{number_of_lines} #{number_of_words} #{number_of_bytes} "
     end
-    exit
+
+    if options.include?("c")
+      output << " #{number_of_bytes} "
+    end
+
+    if options.include?("l")
+      output << " #{number_of_lines} "
+    end
+
+    if options.include?("w")
+      output << " #{number_of_words} "
+    end
+
+    if options.include?("m")
+      output << " #{number_of_characters} "
+    end
+
+    puts output
   end
-  file_contents = read_file(ARGV)
-  puts "    #{file_contents.lines.count} #{file_contents.split.count} #{file_contents.bytesize}"
-  exit
 end
 
-command = ARGV.shift
-process(command)
+input = ARGV[0]
+options = (!input.nil? && input.split("").first) == "-" ? input : ""
 
+input = ARGV[1] if !options.empty?
+input = input.nil? ? $stdin.read : File.read(input)
 
+ccwc = Ccwc.new(input)
+ccwc.process(options)
