@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# TODO: Cleanup
+
 def process(command)
   file_contents = read_file(ARGV)
 
@@ -39,6 +41,26 @@ if ARGV.length == 0
 end
 
 if ARGV.length == 1
+  argument = ARGV.shift
+  if argument.split("").first == "-"
+    contents = $stdin.read
+    case argument
+    when "-c"
+      # number of bytes
+      puts contents.bytesize
+    when "-l"
+      # number of lines
+      puts contents.lines.count
+    when "-w"
+      # number of words
+      puts contents.split.count
+    when "-m"
+      puts contents.size
+    else
+      exit
+    end
+    exit
+  end
   file_contents = read_file(ARGV)
   puts "    #{file_contents.lines.count} #{file_contents.split.count} #{file_contents.bytesize}"
   exit
